@@ -1,0 +1,55 @@
+07/02/15
+-Tried using stats difference of means of every 9x9 pixels square to determine if square is leaf or dirt
+-failed, got 91-95% leaf composition 
+-tried a simple if green-red > 25 and green-blue > 40 then is leaf, else its dirt
+-worked well
+-still no way to verify
+
+auto threshold
+Remove specks of white that aren't leaves:
+	invert image
+	wand picker on black leaves 
+	invert selection to select everything else 
+	cut out selected
+	invert selected back to white
+	invert image again
+histogram
+divide number of white pixels by total count, (hover over the right most bar)
+
+
+
+ImageJ: Fiji
+	ctrl-L - gives all commands and locations of features
+	plugins->macros->record ****** - records all actions and can export into python/java code
+
+image segmentation - segments image into sections, like separating leaves from soil
+
+thresholding - separates image based on color, using a threshold limit of color difference
+
+color images:
+	best: convert to grayscale
+	compare histograms, soil: no change, leaf: noticable changes even in shadowed leaves
+
+possible standards:
+	motion tracking gray sphere
+	gray color card in picture
+	soil sampling
+	leaf sampling
+	blackwhite calibration checker board on ground
+	gps-data
+	temperature
+
+edge detector: start at low threshold, loop increasing threshold until number of edges reach x
+math model: input edge from image, output how close it is
+
+SIFT - scale image feature transform 
+
+watering soil changes soil color
+
+find out what they do, expect, keep going back to them
+
+USE Git/source control
+
+write down design before coding
+
+get name on paper, co-author on paper**
