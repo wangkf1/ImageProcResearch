@@ -1,3 +1,9 @@
+07/07/15
+Leaf: Green>red>blue
+	shadowed leaf: all values below 60
+	leaf in sun: green-red > 15, green - blue > 30
+Dirt: generally is red>blue>green
+
 07/02/15
 -Tried using stats difference of means of every 9x9 pixels square to determine if square is leaf or dirt
 -failed, got 91-95% leaf composition 

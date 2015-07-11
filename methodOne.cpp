@@ -4,8 +4,12 @@
 #include <cmath>
 using namespace cv;
 using namespace std;
+//Global variables
+int SQUARE_DIM = 3;
 
-void threshold_RGB( Mat rgb);
+
+//Functions
+Mat threshold_RGB( Mat rgb);
 double calcSSTR(Scalar arr, int n);
 double calcSSE(Scalar means, Scalar stddevs, int n);
 
@@ -16,17 +20,22 @@ int main(int argc, char** argv){
         return -1;
     }
     
-    Mat img;
+    Mat img, altered;
+    String name = "_altered";
+    name.append(argv[1]);
+    
     img = imread( argv[1], 1);
     if(!img.data){
         cout << "No img data" << endl;
         return -1;
     }
     
-	namedWindow( "window_name", WINDOW_NORMAL );
-	imshow( "window_name", img );
-    threshold_RGB(img);
-
+	namedWindow( "Original", WINDOW_NORMAL );
+	imshow( "Original", img );
+	altered = threshold_RGB(img);
+    namedWindow("Altered",WINDOW_NORMAL);
+    imshow("Altered", altered);
+	imwrite(name, altered);
     while(true)
   	{
     	int c;
@@ -36,29 +45,42 @@ int main(int argc, char** argv){
   	}
     return 0;
 }
-void threshold_RGB(Mat src){
-	Mat rgbChannels[3];
+
+Mat threshold_RGB(Mat src){
+	Mat rgbChannels[3], red, green, blue, altered;
+	int sunLeaf = 0, shadowLeaf = 0, NUM_BOXES = src.rows*src.cols/(SQUARE_DIM*SQUARE_DIM);
+
 	split(src,rgbChannels); //2: red, 1: green, 0: blue
-	Mat red = rgbChannels[2], green = rgbChannels[1], blue = rgbChannels[0];
-	int leafCount = 0, NUM_BOXES = src.rows*src.cols/81;
-	for(int row = 9; row < src.rows; row+=9){
+	red = rgbChannels[2]; green = rgbChannels[1]; blue = rgbChannels[0];
+	altered = src;
+	
+	for(int row = SQUARE_DIM; row <= src.rows; row+=SQUARE_DIM){
+		for(int col = SQUARE_DIM; col <= src.cols; col+=SQUARE_DIM){
 
-		for(int col = 9; col < src.cols; col+=9){
-			Scalar  srcMeans, srcStdDv;
-			// double sstr, sse, ssto,mstr,mse,fRatio,FCRIT = 7.110447;
+			Scalar srcMeans, srcStdDv;
+			meanStdDev(src(Range(row-SQUARE_DIM,row),Range(col-SQUARE_DIM,col)), srcMeans,srcStdDv);
 
-			meanStdDev(src(Range(row-9,row),Range(col-9,col)), srcMeans,srcStdDv);
-			cout << srcMeans;
-			if((srcMeans[1]-srcMeans[2]) > 25 && srcMeans[1] - srcMeans[0] > 40 && srcMeans[1]>srcMeans[2] && srcMeans[2] > srcMeans[0]){
-				cout << "	LEAF" << endl;
-				leafCount++;
+			if(srcMeans[1]>srcMeans[2] && srcMeans[1]>srcMeans[0]){ //leaf
+				if(srcMeans[1]<65){
+					shadowLeaf++;
+					altered(Range(row-SQUARE_DIM,row),Range(col-SQUARE_DIM,col)).setTo(Scalar(50,120,50));
+				}
+				else if(srcMeans[1]-srcMeans[2]>15 && srcMeans[1]-srcMeans[0] > 30){
+					sunLeaf++;
+					altered(Range(row-SQUARE_DIM,row),Range(col-SQUARE_DIM,col)).setTo(Scalar(0,255,0));
+				}
 			}
-			else
-				cout << endl;
+			else if(srcMeans[2]>srcMeans[1] && srcMeans[1]>srcMeans[0]){
+				altered(Range(row-SQUARE_DIM,row),Range(col-SQUARE_DIM,col)).setTo(255);
+			}
+			else{
+				altered(Range(row-SQUARE_DIM,row),Range(col-SQUARE_DIM,col)).setTo(Scalar(0,0,255));
+			}
 		}
 	}
-	cout << leafCount << endl;
-	cout << "Total percentage: " << (double)leafCount/NUM_BOXES << endl;
+	cout << "Shadow: " << shadowLeaf << " Sun leaf: " << sunLeaf << " Total: " << NUM_BOXES << endl;
+	cout << "Total percentage: " << (double)(shadowLeaf+sunLeaf)/NUM_BOXES << endl;
+	return altered;
 }
 //for constant sample sizes across factor levels only
 double calcSSTR(Scalar means, int n){
