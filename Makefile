@@ -102,6 +102,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named attempt4
+
+# Build rule for target.
+attempt4: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 attempt4
+.PHONY : attempt4
+
+# fast build rule for target.
+attempt4/fast:
+	$(MAKE) -f CMakeFiles/attempt4.dir/build.make CMakeFiles/attempt4.dir/build
+.PHONY : attempt4/fast
+
+#=============================================================================
 # Target rules for targets named methodOne
 
 # Build rule for target.
@@ -113,6 +126,30 @@ methodOne: cmake_check_build_system
 methodOne/fast:
 	$(MAKE) -f CMakeFiles/methodOne.dir/build.make CMakeFiles/methodOne.dir/build
 .PHONY : methodOne/fast
+
+attempt4.o: attempt4.cpp.o
+.PHONY : attempt4.o
+
+# target to build an object file
+attempt4.cpp.o:
+	$(MAKE) -f CMakeFiles/attempt4.dir/build.make CMakeFiles/attempt4.dir/attempt4.cpp.o
+.PHONY : attempt4.cpp.o
+
+attempt4.i: attempt4.cpp.i
+.PHONY : attempt4.i
+
+# target to preprocess a source file
+attempt4.cpp.i:
+	$(MAKE) -f CMakeFiles/attempt4.dir/build.make CMakeFiles/attempt4.dir/attempt4.cpp.i
+.PHONY : attempt4.cpp.i
+
+attempt4.s: attempt4.cpp.s
+.PHONY : attempt4.s
+
+# target to generate assembly for a file
+attempt4.cpp.s:
+	$(MAKE) -f CMakeFiles/attempt4.dir/build.make CMakeFiles/attempt4.dir/attempt4.cpp.s
+.PHONY : attempt4.cpp.s
 
 methodOne.o: methodOne.cpp.o
 .PHONY : methodOne.o
@@ -144,9 +181,13 @@ help:
 	@echo "... all (the default if no target is provided)"
 	@echo "... clean"
 	@echo "... depend"
+	@echo "... attempt4"
 	@echo "... edit_cache"
 	@echo "... methodOne"
 	@echo "... rebuild_cache"
+	@echo "... attempt4.o"
+	@echo "... attempt4.i"
+	@echo "... attempt4.s"
 	@echo "... methodOne.o"
 	@echo "... methodOne.i"
 	@echo "... methodOne.s"

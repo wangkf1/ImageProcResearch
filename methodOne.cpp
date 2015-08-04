@@ -20,7 +20,7 @@ int main(int argc, char** argv){
         return -1;
     }
     
-    Mat img, altered;
+    Mat img, cropped, altered;
     String name = "_altered";
     name.append(argv[1]);
     
@@ -30,9 +30,15 @@ int main(int argc, char** argv){
         return -1;
     }
     
+    cropped = img(Range(0, 5184), Range(690, 3075));
+
 	namedWindow( "Original", WINDOW_NORMAL );
 	imshow( "Original", img );
-	altered = threshold_RGB(img);
+
+	namedWindow( "Cropped",WINDOW_NORMAL );
+	imshow("Cropped",cropped);
+
+	altered = threshold_RGB(cropped);
     namedWindow("Altered",WINDOW_NORMAL);
     imshow("Altered", altered);
 	imwrite(name, altered);
@@ -60,7 +66,7 @@ Mat threshold_RGB(Mat src){
 			Scalar srcMeans, srcStdDv;
 			meanStdDev(src(Range(row-SQUARE_DIM,row),Range(col-SQUARE_DIM,col)), srcMeans,srcStdDv);
 
-			if(srcMeans[1]>srcMeans[2] && srcMeans[1]>srcMeans[0]){ //leaf
+			if(srcMeans[1]>srcMeans[2] && srcMeans[1]>srcMeans[0] ){ //leaf
 				if(srcMeans[1]<65){
 					shadowLeaf++;
 					altered(Range(row-SQUARE_DIM,row),Range(col-SQUARE_DIM,col)).setTo(Scalar(50,120,50));

@@ -1,1 +1,2 @@
+/home/kevin/BeanImageProc/CMakeFiles/attempt4.dir
 /home/kevin/BeanImageProc/CMakeFiles/methodOne.dir
